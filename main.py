@@ -5,9 +5,27 @@ from bs4 import BeautifulSoup
 import os
 from datetime import datetime
 import csv
+import config
 
 os.system("cls")
 
+def enviar_mensaje(mensaje):
+  telefono = config.telefono
+  apikey = config.apikey
+  
+  url = "https://api.callmebot.com/whatsapp.php"
+  
+  parametros = {
+    "phone": telefono,
+    "text" : mensaje,
+    "apikey" : apikey
+  }
+  
+  try:
+    requests.get(url, params=parametros)
+    print("Mensaje enviado existosamente")
+  except Exception as e:
+    print(f"Error enviando Whatsapp: {e}")
 
 headers = {"User-Agent" : "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
 
@@ -36,8 +54,12 @@ with open("precios.csv", "a", newline='') as archivo_precios:
 print(texto_titulo)
 
 
-if precio < 180000:
+if precio < 210000:
   print(f"\nOferta!Comprar ya. Precio: ${precio}")
+  
+  mensaje_alerta = f"¡Atención Ícaro! El {texto_titulo} bajó de precio. Está a ${precio}. ¡Corre a comprarlo!"
+  
+  enviar_mensaje(mensaje_alerta)
 else:
   print(f"\nSeguir esperando. Precio: {precio}")
 
